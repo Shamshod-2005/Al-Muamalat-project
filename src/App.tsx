@@ -1,10 +1,11 @@
 import "./App.css";
-import Login from "./pages/register/Login";
+import Router from "./router";
 
 function App() {
   return (
     <>
-      <Login />
+      {/* <Login /> */}
+      <Router />
     </>
   );
 }
