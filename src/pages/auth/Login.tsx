@@ -14,6 +14,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import PasswordInput from "@/components/common/PasswordInput";
 
 type LoginForm = {
   email: string;
@@ -38,7 +39,7 @@ const Login = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState,
   } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
   });
@@ -145,18 +146,20 @@ const Login = () => {
                   className="w-100 flex flex-col gap-5"
                 >
                   <Input {...register("email")} placeholder="Email" />
-                  {errors.email && (
-                    <p className="text-red-500">{errors.email.message}</p>
+                  {formState.errors.email && (
+                    <p className="text-red-500">{formState.errors.email.message}</p>
                   )}
 
-                  <Input
+                  {/* <Input
                     type="password"
                     {...register("password")}
                     placeholder="Password"
                   />
                   {errors.password && (
                     <p className="text-red-500">{errors.password.message}</p>
-                  )}
+                  )} */}
+
+                  <PasswordInput form={{ register, formState }} name='password' />
 
                   <Button type="submit" disabled={loginMutation.isPending}>
                     {loginMutation.isPending ? "Loading..." : "Sign in"}

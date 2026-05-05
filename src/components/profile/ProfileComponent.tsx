@@ -1,18 +1,21 @@
 import { getMeApi, updateUserApi } from "@/api/auth";
 import {
-  QueryClient,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
-import { Button } from "../ui/button";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { useForm } from "react-hook-form";
+  accountSchema,
+  passwordSchema,
+  type AccountSchema,
+  type PasswordSchema,
+} from "@/schemas/profile.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { profileSchema, type ProfileSchema } from "@/schemas/profile.schema";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
+import PasswordInput from "../common/PasswordInput";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 const ProfileComponent = () => {
   const { t } = useTranslation();
@@ -20,10 +23,9 @@ const ProfileComponent = () => {
   const queryClient = useQueryClient();
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: ProfileSchema }) =>
-      updateUserApi(id, data),
-
+    mutationFn: ({ id, data }: any) => updateUserApi(id, data),
     onSuccess: () => {
+      toast.success("O'zgartirildi");
       queryClient.invalidateQueries({ queryKey: ["me"] });
     },
   });
@@ -39,42 +41,38 @@ const ProfileComponent = () => {
 
   console.log(user);
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<ProfileSchema>({
-    resolver: zodResolver(profileSchema),
+  //Akkaunt sxema
+  const accountForm = useForm<AccountSchema>({
+    resolver: zodResolver(accountSchema),
     defaultValues: {
       full_name: "",
       address: "",
-      password: "",
       phone_number: "",
+    },
+  });
+
+  //Passwor sxema
+  const passwordForm = useForm<PasswordSchema>({
+    resolver: zodResolver(passwordSchema),
+    defaultValues: {
+      password: "",
+      confirm_password: "",
     },
   });
 
   // user kelganda formni to‘ldirish
   useEffect(() => {
     if (user) {
-      reset({
+      accountForm.reset({
         full_name: user.full_name,
         address: user.address,
-        password: "",
         phone_number: user.phone_number,
       });
     }
-  }, [user, reset]);
+  }, [user]);
 
-  // if (isUserLoading) {
-  //   return <h1>Loading...</h1>;
-  // }
-
-  // if (errorUser) {
-  //   return <h1>Error</h1>;
-  // }
-
-  const onSubmit = (data: ProfileSchema) => {
+  //Akkaunt Submit
+  const onAccountSubmit = (data: AccountSchema) => {
     if (!user?.user_id) return;
 
     updateMutation.mutate({
@@ -83,63 +81,104 @@ const ProfileComponent = () => {
     });
   };
 
+  //Password Submit
+  const onPasswordSubmit = (data: PasswordSchema) => {
+    if (!user?.user_id) return;
+
+    updateMutation.mutate({
+      id: user.user_id,
+      data: {
+        password: data.password,
+      },
+    });
+  };
+
   return (
     <div className="container mx-auto px-4 pt-30 pb-20">
       <div className="border shadow-xl p-10 rounded-2xl ">
         <div className="">
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="grid grid-cols-2 gap-10"
-          >
-            {/* NAME */}
-            <div className="flex flex-col gap-2">
-              <Label className="text-xl">{t("Enter your name")}</Label>
-              <Input className="py-5 !text-lg " {...register("full_name")} />
-              <p className="text-red-500 text-sm">
-                {errors.full_name?.message}
-              </p>
-            </div>
+          <Tabs defaultValue="account" className="">
+            <TabsList className="py-6 px-2">
+              <TabsTrigger className="py-4 text-base" value="account">
+                Account
+              </TabsTrigger>
+              <TabsTrigger className="py-4 text-base" value="password">
+                Password
+              </TabsTrigger>
+            </TabsList>
 
-            {/* ADDRESS */}
-            <div className="flex flex-col gap-2">
-              <Label className="text-xl">
-                {t("Enter your address (optional)")}
-              </Label>
-              <Input className="py-5 !text-lg  " {...register("address")} />
-            </div>
-
-            {/* PASSWORD */}
-            <div className="flex flex-col gap-2">
-              <Label className="text-xl">{t("Enter password")}</Label>
-              <Input
-                className="py-5 !text-lg  "
-                type="password"
-                {...register("password")}
-                placeholder="Password"
-              />
-              <p className="text-red-500 text-sm">{errors.password?.message}</p>
-            </div>
-
-            {/* PHONE */}
-            <div className="flex flex-col gap-2">
-              <Label className="text-xl">{t("Your phone number")}</Label>
-              <Input className="py-5 !text-lg " {...register("phone_number")} />
-              <p className="text-red-500 text-sm">
-                {errors.phone_number?.message}
-              </p>
-            </div>
-
-            <div className="col-span-2">
-              <Button
-                size="lg"
-                className="bg-[#009688] py-5 px-4"
-                // disabled={isSubmitting}
-                type="submit"
+            <TabsContent value="account" className="w-full pt-5">
+              <form
+                onSubmit={accountForm.handleSubmit(onAccountSubmit)}
+                className="grid grid-cols-2 gap-10"
               >
-                Save changes
-              </Button>
-            </div>
-          </form>
+                <div className="flex flex-col gap-2">
+                  <Label className="text-lg">Name</Label>
+                  <Input
+                    className="py-5"
+                    {...accountForm.register("full_name")}
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <Label className="text-lg">Address</Label>
+                  <Input
+                    className="py-5"
+                    {...accountForm.register("address")}
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <Label className="text-lg">Phone</Label>
+                  <Input
+                    className="py-5"
+                    {...accountForm.register("phone_number")}
+                  />
+                </div>
+
+                <div className="col-span-2">
+                  <Button
+                    className="bg-[#009688] rounded-lg py-5 px-4"
+                    type="submit"
+                    disabled={updateMutation.isPending}
+                  >
+                    {updateMutation.isPending ? "Loading..." : "Save changes"}
+                  </Button>
+                </div>
+              </form>
+            </TabsContent>
+
+            <TabsContent value="password" className="pt-5">
+              <form
+                onSubmit={passwordForm.handleSubmit(onPasswordSubmit)}
+                className="grid grid-cols-2 gap-10"
+              >
+                <PasswordInput
+                  form={passwordForm}
+                  label="New Password"
+                  name="password"
+                />
+
+                <PasswordInput
+                  form={passwordForm}
+                  label="Confirm Password"
+                  name="confirm_password"
+                />
+
+                <div className="col-span-2">
+                  <Button
+                    className="bg-[#009688] rounded-lg py-5 px-4"
+                    type="submit"
+                    disabled={updateMutation.isPending}
+                  >
+                    {updateMutation.isPending
+                      ? "Updating..."
+                      : "Change Password"}
+                  </Button>
+                </div>
+              </form>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>

@@ -1,10 +1,23 @@
 import { z } from "zod";
 
-export const profileSchema = z.object({
-  full_name: z.string().min(2, "Name kamida 2 ta harf bo‘lsin"),
+/* ---------------- ACCOUNT ---------------- */
+export const accountSchema = z.object({
+  full_name: z.string().min(1, "Name required"),
   address: z.string().optional(),
-  password: z.string().min(6, "Parol kamida 6 ta bo‘lsin"),
-  phone_number: z.string().min(9, "Telefon noto‘g‘ri"),
+  phone_number: z.string().min(1, "Phone required"),
 });
 
-export type ProfileSchema = z.infer<typeof profileSchema>;
+/* ---------------- PASSWORD ---------------- */
+export const passwordSchema = z
+  .object({
+    password: z.string().min(6, "Min 6 characters"),
+    confirm_password: z.string().min(6, "Confirm password required"),
+  })
+  .refine((data) => data.password === data.confirm_password, {
+    message: "Passwords do not match",
+    path: ["confirm_password"],
+  });
+
+/* ---------------- TYPES ---------------- */
+export type AccountSchema = z.infer<typeof accountSchema>;
+export type PasswordSchema = z.infer<typeof passwordSchema>;
