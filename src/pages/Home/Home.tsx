@@ -1,3 +1,4 @@
+import ExpertPage from "@/components/home/ExpertPage";
 import HomeHeader from "@/components/home/HomeHeader";
 import Service from "@/components/home/Service";
 
@@ -6,6 +7,7 @@ const Home = () => {
     <div className="">
       <HomeHeader />
       <Service />
+      <ExpertPage />
     </div>
   );
 };
