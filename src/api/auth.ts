@@ -2,7 +2,6 @@ import { axiosInstance } from "@/configs/axios";
 
 export const getMeApi = async () => {
   const res = await axiosInstance.get("/users/me");
-  console.log(res.data);
   return res.data.data;
 };
 
@@ -56,5 +55,20 @@ export const otpApiRegister = async (data: { email: string; otp: string }) => {
 
 export const CourseList = async () => {
   const res = await axiosInstance.get("/courses/main");
+  return res.data.data;
+};
+
+export const Payment = async (payload: {
+  course_id: number;
+  user_id: number;
+}) => {
+  const res = await axiosInstance.post("/courses/user", payload);
+
+  return res.data.data;
+};
+
+export const GetPaymentUrl = async (id: number) => {
+  const res = await axiosInstance.get(`/courses/purchase/${id}`);
+
   return res.data.data;
 };

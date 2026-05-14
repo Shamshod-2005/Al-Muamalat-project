@@ -1,13 +1,11 @@
-import { Badge } from "lucide-react";
-import {
-  Card,
-  CardAction,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
 import { useTranslation } from "react-i18next";
 import { Button } from "../ui/button";
+import {
+    Card,
+    CardDescription,
+    CardHeader,
+    CardTitle
+} from "../ui/card";
 
 const Services = () => {
   const { t } = useTranslation();

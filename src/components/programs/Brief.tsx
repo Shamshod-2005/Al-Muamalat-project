@@ -1,8 +1,51 @@
-import { CourseList, getMeApi } from "@/api/auth";
+import { CourseList, getMeApi, GetPaymentUrl, Payment } from "@/api/auth";
 import i18n from "@/configs/i18n";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
+import { toast } from "sonner";
+import { Button } from "../ui/button";
+
+const data = [
+  {
+    name: "Space for creative ideas",
+    description:
+      "Cyber Square nourishes young aspiring minds to get a clear vision of their ideas. We guide them in analyzing and building their vision  and ideas into reality.",
+  },
+  {
+    name: "Engaging and fun curriculum",
+    description:
+      "Our goal is to create an engaging system that provides exciting activities so children can understand the programming concepts thoroughly so that they can perform them on their own. With Cyber Square kids have fun while they learn without frustrations.",
+  },
+  {
+    name: "Professional teaching methods",
+    description:
+      "We professionals at Cyber Square, have developed an in-depth understanding in how to teach kids and how to code. Moreover, we believe in exposing kids to real programming languages and professional tools.",
+  },
+];
+const payment = [
+  {
+    title: "Space for creative ideas",
+  },
+  {
+    title: "Engaging and fun curriculum",
+  },
+  {
+    title: "Professional teaching methods",
+  },
+  {
+    title: "Learn from AI & Data Science experts",
+  },
+  {
+    title: "Courses by IIT, NIT, and IIM alumni",
+  },
+  {
+    title: "UK certification upon completion",
+  },
+  {
+    title: "Personalized one-to-one training",
+  },
+];
 
 const Brief = () => {
   const { t } = useTranslation();
@@ -31,6 +74,30 @@ const Brief = () => {
     queryFn: getMeApi,
   });
 
+  const PaymentMutation = useMutation({
+    mutationKey: ["payment"],
+    mutationFn: Payment,
+
+    onSuccess: async (res) => {
+      toast.success("Success");
+      try {
+        const response = await GetPaymentUrl(res?.id);
+
+        if (response?.data) {
+          window.open(response.data, "_blank");
+        }
+      } catch (error) {
+        toast.error("Payment url error");
+      }
+    },
+
+    onError: (error) => {
+      toast.error("Error");
+
+      console.log(error);
+    },
+  });
+
   if (isUserLoading) {
     return <h1>Loading...</h1>;
   }
@@ -47,39 +114,19 @@ const Brief = () => {
     return <h1>Courses error</h1>;
   }
 
+  const onSubmit = () => {
+    const submitData = {
+      course_id: course?.course_id,
+      user_id: user?.user_id,
+    };
+
+    console.log("submit data:", submitData);
+
+    PaymentMutation.mutate(submitData);
+  };
+
   return (
     <div className="container mx-auto px-4 pb-25">
-      {/* <div className="pb-12">
-        <h2 className="font-bold text-4xl text-center">
-          Brief information about the course
-        </h2>
-      </div>
-
-      <div className="grid grid-cols-2 gap-10">
-        <div className="flex flex-col gap-8 w-150">
-          <h3 className="text-[#009688] font-medium text-4xl">
-            {t("Videodarslar")}
-          </h3>
-          <span className="text-[28px] font-normal">
-            {t(
-              "Lessons are posted on the platform in the form of videos, which can be viewed anytime and anywhere. Video lessons are updated.",
-            )}
-          </span>
-        </div>
-        <div className="flex flex-col gap-8">
-          <h3 className="text-[#009688] font-medium text-4xl">{t("Tasks")}</h3>
-          <span className="text-[28px] font-normal">
-            {t(
-              "Test tasks are given at the end of the module. Only students who successfully pass the test will be able to access the lessons in the next module.",
-            )}
-          </span>
-        </div>
-      </div> */}
-
-      <div>
-        <h2>User: {user?.address}</h2>
-      </div>
-
       <div className=" mt-10">
         <h1 className="font-bold text-3xl text-center pb-10">
           {course?.name_uz}
@@ -92,6 +139,53 @@ const Brief = () => {
               ?.replace(/\\"/g, '"'),
           }}
         />
+      </div>
+
+      <div className="grid grid-cols-2  border mt-25">
+        <div className="p-20 border bg-[#009688] ">
+          <h2 className="font-bold text-4xl text-white">{t("Our Services")}</h2>
+
+          <div className="pt-16 flex flex-col gap-8">
+            {data.map((item, index) => (
+              <div key={index} className="flex flex-col gap-2">
+                <div className="flex gap-3 items-center">
+                  <img
+                    src="/programs/icon.svg"
+                    className="w-[35px] h-[35px] brightness-0 invert"
+                  />
+                  <h3 className="text-[22px] text-white font-semibold">
+                    {item.name}
+                  </h3>
+                </div>
+
+                <p className="text-base text-white font-medium w-100">
+                  {item.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="p-20 ">
+          <h2 className="font-bold text-4xl">{t("Payment")}</h2>
+          <div className="space-y-3 pt-16 pb-16">
+            {payment.map((item, index) => (
+              <div
+                key={index}
+                className="flex items-start gap-3 p-2 rounded-md hover:bg-gray-50"
+              >
+                <span className="mt-2 w-2 h-2 bg-[#009688] rounded-full" />
+                <p className="font-normal text-lg">{item.title}</p>
+              </div>
+            ))}
+          </div>
+          <Button
+            onClick={onSubmit}
+            className="bg-[#009688] px-8 py-6 rounded-sm font-semibold text-lg cursor-pointer"
+          >
+            {t("Purchase Now")}
+          </Button>
+        </div>
       </div>
     </div>
   );

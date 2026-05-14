@@ -9,12 +9,13 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { loginApi, otpApi, ResendOtpApi } from "@/api/auth";
+import PasswordInput from "@/components/common/PasswordInput";
 import { otpSchema } from "@/schemas/otp.schem";
 import { useAuthStore } from "@/store/useAuthStore";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import PasswordInput from "@/components/common/PasswordInput";
+import { Label } from "@/components/ui/label";
 
 type LoginForm = {
   email: string;
@@ -36,11 +37,7 @@ const Login = () => {
   const [isExpired, setIsExpired] = useState(false);
   const [canResend, setCanResend] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState,
-  } = useForm<LoginForm>({
+  const { register, handleSubmit, formState } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
   });
 
@@ -145,9 +142,16 @@ const Login = () => {
                   onSubmit={handleSubmit(onSubmit)}
                   className="w-100 flex flex-col gap-5"
                 >
-                  <Input {...register("email")} placeholder="Email" />
+                  <Label className="text-lg ">Email</Label>
+                  <Input
+                    {...register("email")}
+                    placeholder="Email"
+                    className="py-5"
+                  />
                   {formState.errors.email && (
-                    <p className="text-red-500">{formState.errors.email.message}</p>
+                    <p className="text-red-500">
+                      {formState.errors.email.message}
+                    </p>
                   )}
 
                   {/* <Input
@@ -159,7 +163,12 @@ const Login = () => {
                     <p className="text-red-500">{errors.password.message}</p>
                   )} */}
 
-                  <PasswordInput form={{ register, formState }} name='password' />
+                  <PasswordInput
+                    placeholder="Password"
+                    form={{ register, formState }}
+                    name="password"
+                    label="Password"
+                  />
 
                   <Button type="submit" disabled={loginMutation.isPending}>
                     {loginMutation.isPending ? "Loading..." : "Sign in"}

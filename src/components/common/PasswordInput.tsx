@@ -7,10 +7,12 @@ const PasswordInput = ({
   form,
   label,
   name,
+  placeholder,
 }: {
   form: any;
   label?: string;
   name: string;
+  placeholder?:string
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -21,6 +23,7 @@ const PasswordInput = ({
       <Input
         className="py-5"
         type={showPassword ? "text" : "password"}
+        placeholder={placeholder}
         {...form.register(name)}
       />
 

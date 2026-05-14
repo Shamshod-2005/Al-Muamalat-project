@@ -30,8 +30,6 @@ const Header = () => {
     return <h1>Error</h1>;
   }
 
-  console.log(data);
-
   return (
     <div className="sticky top-0 z-50 bg-white shadow-md ">
       <div className="flex items-center justify-between container mx-auto px-4 pt-5 pb-5">
@@ -49,7 +47,7 @@ const Header = () => {
 
               <DropdownMenuContent className="w-65">
                 {data?.map((item: any) => (
-                  <DropdownMenuItem key={item.course_id}>
+                  <DropdownMenuItem asChild key={item.course_id}>
                     <Link to={`/programs/${item.course_id}`}>
                       {item.name_uz}
                     </Link>

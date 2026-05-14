@@ -5,6 +5,7 @@ import button_img from "@/assets/Button.png";
 
 const HomeHeader = () => {
   const { t } = useTranslation();
+
   return (
     <div className="bg-[#009688] mb-15 pb-2 pt-10">
       <div className="container mx-auto px-4">
