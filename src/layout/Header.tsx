@@ -16,7 +16,7 @@ import { Link } from "react-router-dom";
 
 const Header = () => {
   const { t } = useTranslation();
-  const { isAuth, user, logout } = useAuthStore();
+  const { isAuth, logout } = useAuthStore();
 
   const { data } = useQuery({
     queryKey: ["courses"],

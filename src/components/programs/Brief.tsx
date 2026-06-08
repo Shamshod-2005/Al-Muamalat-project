@@ -151,7 +151,7 @@ const Brief = () => {
                 <div className="flex gap-3 items-center">
                   <img
                     src="/programs/icon.svg"
-                    className="w-[35px] h-[35px] brightness-0 invert"
+                    className="w-10 h-10 brightness-0 invert"
                   />
                   <h3 className="text-[22px] text-white font-semibold">
                     {item.name}
