@@ -15,16 +15,16 @@ type Lang = "en" | "uz";
 const LanguageSwitcher = () => {
   const { i18n } = useTranslation();
 
-  const changeLanguage = (lng: string) => {
+  const changeLanguage = (lng: Lang) => {
     i18n.changeLanguage(lng);
   };
 
-  const flags: Record<Lang, string> = {
+  const flags: Record<string, string> = {
     en: uk_flag,
     uz: uz_flag,
   };
 
-  const currentLang = i18n.language as Lang;
+  const currentLang = i18n.language;
 
   const safeLang: Lang = currentLang === "uz" ? "uz" : "en";
 
