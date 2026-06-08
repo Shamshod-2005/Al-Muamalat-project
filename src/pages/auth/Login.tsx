@@ -35,7 +35,6 @@ const Login = () => {
 
   const [timeLeft, setTimeLeft] = useState(60);
   const [isExpired, setIsExpired] = useState(false);
-  const [canResend, setCanResend] = useState(false);
 
   const { register, handleSubmit, formState } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),

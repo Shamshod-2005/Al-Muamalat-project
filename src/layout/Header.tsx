@@ -18,7 +18,7 @@ const Header = () => {
   const { t } = useTranslation();
   const { isAuth, user, logout } = useAuthStore();
 
-  const { data, isLoading, error } = useQuery({
+  const { data } = useQuery({
     queryKey: ["courses"],
     queryFn: CourseList,
   });

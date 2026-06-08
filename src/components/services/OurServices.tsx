@@ -21,7 +21,7 @@ import {
 
 import { Button } from "../ui/button";
 
-const OurService = () => {
+const OurServices = () => {
   const { t } = useTranslation();
 
   const data: {
@@ -141,4 +141,4 @@ const OurService = () => {
   );
 };
 
-export default OurService;
+export default OurServices;

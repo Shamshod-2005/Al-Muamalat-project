@@ -5,7 +5,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
-import { useTranslation } from "react-i18next";
 
 const OurCoreGoals = () => {
   const data: {
@@ -32,8 +31,6 @@ const OurCoreGoals = () => {
       icon: ShieldCheck,
     },
   ];
-
-  const { t } = useTranslation();
 
   return (
     <div className="container mx-auto px-4 mt-30">

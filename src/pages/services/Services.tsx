@@ -1,7 +1,7 @@
 import InternationalClients from "@/components/services/InternationalClients";
 import LocalClients from "@/components/services/LocalClients";
 import OurCoreGoals from "@/components/services/OurCoreGoals";
-import OurServices from "@/components/services/ourServices";
+import OurServices from "@/components/services/OurServices";
 
 const Services = () => {
   return (

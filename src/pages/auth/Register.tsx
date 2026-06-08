@@ -1,4 +1,4 @@
-import { otpApi, otpApiRegister, registerApi } from "@/api/auth";
+import { otpApiRegister, registerApi } from "@/api/auth";
 import login_img from "@/assets/login_img.png";
 import logo from "@/assets/Logo.png";
 import { Button } from "@/components/ui/button";

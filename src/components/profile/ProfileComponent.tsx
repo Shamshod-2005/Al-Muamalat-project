@@ -9,7 +9,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import PasswordInput from "../common/PasswordInput";
 import { Button } from "../ui/button";
@@ -18,8 +17,6 @@ import { Label } from "../ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 const ProfileComponent = () => {
-  const { t } = useTranslation();
-
   const queryClient = useQueryClient();
 
   const updateMutation = useMutation({
@@ -38,6 +35,14 @@ const ProfileComponent = () => {
     queryKey: ["me"],
     queryFn: getMeApi,
   });
+
+  if (isUserLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (errorUser) {
+    return <div>Something went wrong</div>;
+  }
 
   //Akkaunt sxema
   const accountForm = useForm<AccountSchema>({

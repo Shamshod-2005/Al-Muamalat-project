@@ -10,17 +10,23 @@ import {
 } from "../ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 
+type Lang = "en" | "uz";
+
 const LanguageSwitcher = () => {
   const { i18n } = useTranslation();
 
-  const changeLanguage = (lng) => {
+  const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
   };
 
-  const flags = {
+  const flags: Record<Lang, string> = {
     en: uk_flag,
     uz: uz_flag,
   };
+
+  const currentLang = i18n.language as Lang;
+
+  const safeLang: Lang = currentLang === "uz" ? "uz" : "en";
 
   return (
     <div className="">
@@ -31,9 +37,9 @@ const LanguageSwitcher = () => {
             className="flex items-center gap-2 border-0 shadow-none"
           >
             <img
-              src={flags[i18n.language] || uk_flag}
+              src={flags[safeLang]}
               alt="flag"
-              className="w-8 h-6  object-cover"
+              className="w-8 h-6 object-cover"
             />
             <span className="text-xl">{i18n.language}</span>
             <ChevronDown size={22} />
