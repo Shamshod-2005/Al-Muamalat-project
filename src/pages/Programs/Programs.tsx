@@ -1,5 +1,4 @@
 import Brief from "@/components/programs/Brief";
-import Payment from "@/components/programs/Payment";
 import Services from "@/components/programs/Services";
 
 const Programs = () => {
@@ -8,7 +7,6 @@ const Programs = () => {
     <div>
       {/* <Edicational /> */}
       <Brief />
-      <Payment />
       <Services />
     </div>
   );

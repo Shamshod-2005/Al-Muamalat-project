@@ -22,13 +22,13 @@ const Header = () => {
     queryKey: ["courses"],
     queryFn: CourseList,
   });
-  if (isLoading) {
-    return <h1>Loading...</h1>;
-  }
+  // if (isLoading) {
+  //   return <h1>Loading...</h1>;
+  // }
 
-  if (error) {
-    return <h1>Error</h1>;
-  }
+  // if (error) {
+  //   return <h1>Error</h1>;
+  // }
 
   return (
     <div className="sticky top-0 z-50 bg-white shadow-md ">
@@ -39,6 +39,7 @@ const Header = () => {
 
         <div className="flex gap-8">
           <a href="/home">{t("Home")}</a>
+          <a href="/services">{t("Services")}</a>
           <a href="" className="flex items-center">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

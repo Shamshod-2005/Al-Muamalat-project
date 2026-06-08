@@ -1,12 +1,12 @@
 import ExpertPage from "@/components/home/ExpertPage";
 import HomeHeader from "@/components/home/HomeHeader";
-import Service from "@/components/home/Service";
+import OurService from "@/components/services/ourServices";
 
 const Home = () => {
   return (
-    <div className="">
+    <div className="min-h-[60vh]">
       <HomeHeader />
-      <Service />
+      <OurService />
       <ExpertPage />
     </div>
   );

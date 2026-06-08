@@ -39,8 +39,6 @@ const ProfileComponent = () => {
     queryFn: getMeApi,
   });
 
-  console.log(user);
-
   //Akkaunt sxema
   const accountForm = useForm<AccountSchema>({
     resolver: zodResolver(accountSchema),

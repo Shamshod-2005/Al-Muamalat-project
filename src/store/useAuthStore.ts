@@ -13,8 +13,16 @@ type AuthState = {
   user: User | null;
   accessToken: string | null;
   refreshToken: string | null;
-  login: (data: { user: User; accessToken: string, refreshToken: string }) => void;
-  register: (data: { user: User; accessToken: string, refreshToken: string }) => void;
+  login: (data: {
+    user: User;
+    accessToken: string;
+    refreshToken: string;
+  }) => void;
+  register: (data: {
+    user: User;
+    accessToken: string;
+    refreshToken: string;
+  }) => void;
   logout: () => void;
 };
 

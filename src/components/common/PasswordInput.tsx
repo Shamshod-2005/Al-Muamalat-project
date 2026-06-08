@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
 import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 const PasswordInput = ({
   form,
@@ -12,7 +12,7 @@ const PasswordInput = ({
   form: any;
   label?: string;
   name: string;
-  placeholder?:string
+  placeholder?: string;
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 

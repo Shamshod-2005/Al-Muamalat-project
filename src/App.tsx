@@ -5,7 +5,6 @@ import { Toaster } from "sonner";
 function App() {
   return (
     <>
-      {/* <Login /> */}
       <Router />
       <Toaster richColors position="top-right" />
     </>

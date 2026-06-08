@@ -15,6 +15,7 @@ import {
 import PublicRoute from "./PublicRoute";
 import Programs from "@/pages/Programs/Programs";
 import Profile from "@/pages/Profile/Profile";
+import Services from "@/pages/services/Services";
 
 const Router = () => {
   const router = createBrowserRouter(
@@ -50,6 +51,7 @@ const Router = () => {
         >
           <Route index element={<Navigate to="home" replace />} />
           <Route path="home" element={<Home />} />
+          <Route path="services" element={<Services />} />
           <Route path="programs/:id" element={<Programs />} />
           <Route path="profile" element={<Profile />} />
         </Route>
