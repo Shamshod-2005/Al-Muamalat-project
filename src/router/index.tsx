@@ -41,20 +41,22 @@ const Router = () => {
         />
 
         {/* ================= PROTECTED ROUTES ================= */}
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
-              <Layout />
-            </ProtectedRoute>
-          }
-        >
+        <Route path="/" element={<Layout />}>
           <Route index element={<Navigate to="home" replace />} />
           <Route path="home" element={<Home />} />
           <Route path="services" element={<Services />} />
           <Route path="programs/:id" element={<Programs />} />
-          <Route path="profile" element={<Profile />} />
         </Route>
+
+        {/* PROTECTED */}
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
 
         {/* ================= NOT FOUND ================= */}
         <Route path="*" element={<div>Not Found</div>} />

@@ -22,13 +22,6 @@ const Header = () => {
     queryKey: ["courses"],
     queryFn: CourseList,
   });
-  // if (isLoading) {
-  //   return <h1>Loading...</h1>;
-  // }
-
-  // if (error) {
-  //   return <h1>Error</h1>;
-  // }
 
   return (
     <div className="sticky top-0 z-50 bg-white shadow-md ">
@@ -74,11 +67,14 @@ const Header = () => {
               onClick={logout}
               className="px-6 py-5 bg-[#009688] text-lg cursor-pointer"
             >
-              logout
+              Logout
             </Button>
           ) : (
-            <Button className="px-6 py-5 bg-[#009688] text-lg cursor-pointer">
-              sign in
+            <Button
+              asChild
+              className="px-6 py-5 bg-[#009688] text-lg cursor-pointer"
+            >
+              <Link to="/login">Sign In</Link>
             </Button>
           )}
         </div>
