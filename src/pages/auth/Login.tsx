@@ -237,7 +237,7 @@ const Login = () => {
 
         {/* right */}
         <div className="bg-[#009688] rounded-2xl flex flex-col justify-center items-center p-10 gap-y-20">
-          <img src={login_img} alt="" />
+          <img src={login_img} alt="" className="w-100" />
           <span className="text-white text-2xl font-bold w-150 text-center">
             Welcome to AI Muamalat Empowering Your Journey in Islamic Finance
           </span>
