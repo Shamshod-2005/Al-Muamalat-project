@@ -6,7 +6,10 @@ export const getMeApi = async () => {
 };
 
 //Userni update qilish
-export const updateUserApi = async (id: string, data: any) => {
+export const updateUserApi = async (
+  id: string | number,
+  data: Record<string, unknown>,
+) => {
   const res = await axiosInstance.put(`/users/${id}`, data);
   return res.data;
 };

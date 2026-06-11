@@ -6,6 +6,12 @@ import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 
+type Course = {
+  course_id: number;
+  name_uz?: string;
+  [key: string]: unknown;
+};
+
 const data = [
   {
     name: "Space for creative ideas",
@@ -53,16 +59,16 @@ const Brief = () => {
   const { id } = useParams();
 
   const {
-    data: course_id,
+    data: courseList,
     isLoading,
     error,
-  } = useQuery({
+  } = useQuery<Course[]>({
     queryKey: ["courses", id],
     queryFn: CourseList,
   });
 
-  const course = course_id?.find(
-    (item: any) => String(item.course_id) === String(id),
+  const course = courseList?.find(
+    (item) => String(item.course_id) === String(id),
   );
 
   const {
@@ -80,13 +86,33 @@ const Brief = () => {
 
     onSuccess: async (res) => {
       toast.success("Success");
-      try {
-        const response = await GetPaymentUrl(res?.id);
 
-        if (response?.data) {
-          window.open(response.data, "_blank");
+      if (!res?.id) {
+        toast.error("Invalid payment response");
+        return;
+      }
+
+      try {
+        const paymentResult = await GetPaymentUrl(res.id);
+
+        if (typeof paymentResult === "string" && paymentResult.length > 0) {
+          window.open(paymentResult, "_blank");
+          return;
         }
+
+        if (
+          paymentResult &&
+          typeof paymentResult === "object" &&
+          "data" in paymentResult &&
+          paymentResult.data
+        ) {
+          window.open(String(paymentResult.data), "_blank");
+          return;
+        }
+
+        toast.error("Payment url error");
       } catch (error) {
+        console.error("Payment URL error:", error);
         toast.error("Payment url error");
       }
     },
@@ -115,9 +141,14 @@ const Brief = () => {
   }
 
   const onSubmit = () => {
+    if (!course || !user) {
+      toast.error("Course or user data is missing");
+      return;
+    }
+
     const submitData = {
-      course_id: course?.course_id,
-      user_id: user?.user_id,
+      course_id: course.course_id,
+      user_id: user.user_id,
     };
 
     console.log("submit data:", submitData);
@@ -134,9 +165,9 @@ const Brief = () => {
         <p
           className="text-base"
           dangerouslySetInnerHTML={{
-            __html: course?.[`description_${i18n?.language}`]
-              ?.replace(/\\n/g, "")
-              ?.replace(/\\"/g, '"'),
+            __html: String(course?.[`description_${i18n?.language}`] ?? "")
+              .replace(/\\n/g, "")
+              .replace(/\\"/g, '"'),
           }}
         />
       </div>
@@ -180,6 +211,7 @@ const Brief = () => {
             ))}
           </div>
           <Button
+            type="button"
             onClick={onSubmit}
             className="bg-[#009688] px-8 py-6 rounded-sm font-semibold text-lg cursor-pointer"
           >

@@ -48,6 +48,14 @@ const Login = () => {
     resolver: zodResolver(otpSchema),
   });
 
+  type AxiosErrorShape = {
+    response?: {
+      data?: {
+        message?: string;
+      };
+    };
+  };
+
   const loginMutation = useMutation({
     mutationFn: loginApi,
     onSuccess: (_, variables) => {
@@ -57,8 +65,9 @@ const Login = () => {
 
       startTimer();
     },
-    onError: (error: any) => {
-      const message = error.response?.data?.message || "Xatolik";
+    onError: (error: unknown) => {
+      const message =
+        (error as AxiosErrorShape)?.response?.data?.message || "Xatolik";
       toast.error(message);
     },
   });
@@ -75,8 +84,10 @@ const Login = () => {
       toast.success("Login successful");
       navigate("/home");
     },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || "OTP xatolik");
+    onError: (error: unknown) => {
+      const message =
+        (error as AxiosErrorShape)?.response?.data?.message || "OTP xatolik";
+      toast.error(message);
     },
   });
 

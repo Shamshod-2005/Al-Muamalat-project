@@ -113,6 +113,7 @@ const OurServices = () => {
           {data?.map((item, index) => {
             return (
               <Card
+                key={`${item.title}-${index}`}
                 className="w-full h-full justify-between rounded-[26px] px-6 py-8 shadow-lg"
                 style={{ backgroundColor: cardColors[index] }}
               >

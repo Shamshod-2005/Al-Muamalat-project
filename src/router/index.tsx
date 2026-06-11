@@ -15,6 +15,7 @@ import {
 import PublicRoute from "./PublicRoute";
 import Programs from "@/pages/Programs/Programs";
 import Profile from "@/pages/Profile/Profile";
+import Contact from "@/pages/Contact/Contact";
 import Services from "@/pages/services/Services";
 
 const Router = () => {
@@ -45,18 +46,19 @@ const Router = () => {
           <Route index element={<Navigate to="home" replace />} />
           <Route path="home" element={<Home />} />
           <Route path="services" element={<Services />} />
+          <Route path="contact" element={<Contact />} />
           <Route path="programs/:id" element={<Programs />} />
+          <Route
+            path="profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
         </Route>
 
         {/* PROTECTED */}
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
 
         {/* ================= NOT FOUND ================= */}
         <Route path="*" element={<div>Not Found</div>} />

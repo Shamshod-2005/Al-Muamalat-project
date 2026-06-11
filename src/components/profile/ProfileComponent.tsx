@@ -8,6 +8,8 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import PasswordInput from "../common/PasswordInput";
@@ -20,7 +22,8 @@ const ProfileComponent = () => {
   const queryClient = useQueryClient();
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, data }: any) => updateUserApi(id, data),
+    mutationFn: ({ id, data }: { id: number; data: Record<string, unknown> }) =>
+      updateUserApi(id, data),
     onSuccess: () => {
       toast.success("O'zgartirildi");
       queryClient.invalidateQueries({ queryKey: ["me"] });
@@ -35,14 +38,6 @@ const ProfileComponent = () => {
     queryKey: ["me"],
     queryFn: getMeApi,
   });
-
-  if (isUserLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (errorUser) {
-    return <div>Something went wrong</div>;
-  }
 
   //Akkaunt sxema
   const accountForm = useForm<AccountSchema>({
@@ -74,6 +69,17 @@ const ProfileComponent = () => {
     }
   }, [user]);
 
+  const navigate = useNavigate();
+  const { logout } = useAuthStore();
+
+  if (isUserLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (errorUser) {
+    return <div>Something went wrong</div>;
+  }
+
   //Akkaunt Submit
   const onAccountSubmit = (data: AccountSchema) => {
     if (!user?.user_id) return;
@@ -97,9 +103,24 @@ const ProfileComponent = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 pt-30 pb-20">
+    <div className="container mx-auto px-4 pt-20 pb-20">
+      <div>
+        <h2 className="font-bold text-4xl pb-5">My Profile</h2>
+      </div>
       <div className="border shadow-xl p-10 rounded-2xl ">
         <div className="">
+          <div className="flex justify-end mb-4">
+            <Button
+              className="bg-red-500 rounded-lg py-2 px-4"
+              onClick={() => {
+                logout();
+                toast.success("Logged out");
+                navigate("/login");
+              }}
+            >
+              Logout
+            </Button>
+          </div>
           <Tabs defaultValue="account" className="">
             <TabsList className="py-6 px-2">
               <TabsTrigger className="py-4 text-base" value="account">

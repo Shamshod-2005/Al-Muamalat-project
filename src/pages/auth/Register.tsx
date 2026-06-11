@@ -59,6 +59,14 @@ const Register = () => {
     resolver: zodResolver(otpSchema),
   });
 
+  type AxiosErrorShape = {
+    response?: {
+      data?: {
+        message?: string;
+      };
+    };
+  };
+
   const registerMutation = useMutation({
     mutationFn: registerApi,
 
@@ -68,8 +76,11 @@ const Register = () => {
       setStep("otp");
       console.log(data);
     },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || "Xatolik yuz berdi");
+    onError: (error: unknown) => {
+      const message =
+        (error as AxiosErrorShape)?.response?.data?.message ||
+        "Xatolik yuz berdi";
+      toast.error(message);
     },
   });
 
@@ -77,17 +88,24 @@ const Register = () => {
   const otpMutation = useMutation({
     mutationFn: otpApiRegister,
     onSuccess: (data) => {
-      setUser(data.user);
+      setUser({
+        user: data.user,
+        accessToken: data.tokens.accessToken,
+        refreshToken: data.tokens.refreshToken,
+      });
       toast.success("Register successful");
       navigate("/home");
     },
-    onError: (error: any) => {
-      toast.error(error?.response?.data?.message || "OTP xatolik");
+    onError: (error: unknown) => {
+      const message =
+        (error as AxiosErrorShape)?.response?.data?.message || "OTP xatolik";
+      toast.error(message);
     },
   });
 
   const onSubmit = async (data: RegisterForm) => {
     const { confirm_password, ...payload } = data;
+    void confirm_password;
 
     registerMutation.mutate(payload);
   };

@@ -2,18 +2,24 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import type { FieldErrors, Path, UseFormRegister } from "react-hook-form";
 
-const PasswordInput = ({
+type PasswordInputProps<T extends Record<string, unknown>> = {
+  form: {
+    register: UseFormRegister<T>;
+    formState: { errors: FieldErrors<T> };
+  };
+  label?: string;
+  name: Path<T>;
+  placeholder?: string;
+};
+
+const PasswordInput = <T extends Record<string, unknown>>({
   form,
   label,
   name,
   placeholder,
-}: {
-  form: any;
-  label?: string;
-  name: string;
-  placeholder?: string;
-}) => {
+}: PasswordInputProps<T>) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
@@ -36,7 +42,7 @@ const PasswordInput = ({
       </button>
 
       <p className="text-red-500 text-sm">
-        {form.formState.errors[`${name}`]?.message}
+        {form.formState.errors[name]?.message as string | undefined}
       </p>
     </div>
   );
