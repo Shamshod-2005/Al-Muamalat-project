@@ -105,7 +105,7 @@ ${data.message}
       </div>
 
       {/* Contact Form */}
-      <div className="mt-30 p-15 rounded-2xl border">
+      <div className="mt-30 p-10 rounded-2xl border">
         <div className="grid gap-10 lg:grid-cols-[1fr_1.05fr] items-start">
           <div>
             <h2 className="text-3xl font-bold">Get in touch</h2>
