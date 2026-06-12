@@ -34,12 +34,9 @@ const Header = () => {
   return (
     <div className="sticky top-0 z-50 bg-white shadow-md">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <img src={logo} alt="" className="h-10 w-auto" />
-          <span className="hidden sm:inline-block text-sm text-slate-600">
-            {t("Empower")}
-          </span>
-        </div>
+        <Link to="/home" className="flex items-center gap-4 cursor-pointer">
+          <img src={logo} alt="Logo" className="h-10 w-auto" />
+        </Link>
 
         <div className="hidden lg:flex items-center gap-8">
           <NavLink
