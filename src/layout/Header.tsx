@@ -13,7 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Course = {
   course_id: number;
@@ -24,12 +24,23 @@ const Header = () => {
   const { t } = useTranslation();
   const { isAuth } = useAuthStore();
   const location = useLocation();
-  const [open, setOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
   const { data: courses } = useQuery<Course[]>({
     queryKey: ["courses"],
     queryFn: CourseList,
   });
+
+  useEffect(() => {
+    const m = location.pathname.match(/\/programs\/(\d+)/);
+    if (m && courses) {
+      const id = Number(m[1]);
+      const found = courses.find((c) => c.course_id === id);
+      if (found) setSelectedCourse(found);
+    }
+  }, [location.pathname, courses]);
 
   return (
     <div className="sticky top-0 z-50 bg-white shadow-md">
@@ -88,22 +99,42 @@ const Header = () => {
                 : "hover:border-b-2 hover:border-slate-300 pb-1"
             }`}
           >
-            <DropdownMenu>
+            <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>
               <DropdownMenuTrigger asChild>
-                <span>{t("Programs")}</span>
+                <span className="cursor-pointer flex items-center gap-2">
+                  {t("Programs")}
+                  <ChevronDown
+                    size={18}
+                    className={dropdownOpen ? "transform rotate-180" : ""}
+                  />
+                </span>
               </DropdownMenuTrigger>
 
               <DropdownMenuContent className="w-65">
-                {courses?.map((item) => (
-                  <DropdownMenuItem asChild key={item.course_id}>
-                    <Link to={`/programs/${item.course_id}`}>
-                      {item.name_uz}
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
+                {courses?.map((item) => {
+                  const isSelected =
+                    selectedCourse?.course_id === item.course_id;
+                  return (
+                    <DropdownMenuItem asChild key={item.course_id}>
+                      <Link
+                        to={`/programs/${item.course_id}`}
+                        className={`w-full block py-2 px-3 rounded ${
+                          isSelected
+                            ? "bg-slate-100 text-[#009688] font-semibold"
+                            : "text-slate-700 hover:bg-slate-50"
+                        }`}
+                        onClick={() => {
+                          setSelectedCourse(item);
+                          setDropdownOpen(false);
+                        }}
+                      >
+                        {item.name_uz}
+                      </Link>
+                    </DropdownMenuItem>
+                  );
+                })}
               </DropdownMenuContent>
             </DropdownMenu>
-            <ChevronDown size={22} />
           </div>
           <a href="">{t("Finance tools")}</a>
           <NavLink
@@ -148,7 +179,7 @@ const Header = () => {
           <LanguageSwitcher />
           <button
             aria-label="Menu"
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => setMobileOpen((v) => !v)}
             className="ml-3 p-2 rounded-md text-slate-700 hover:bg-slate-100"
           >
             <svg
@@ -169,19 +200,19 @@ const Header = () => {
         </div>
 
         {/* mobile menu panel */}
-        {open && (
+        {mobileOpen && (
           <div className="lg:hidden absolute top-full left-0 right-0 bg-white shadow-md">
             <div className="container mx-auto px-4 py-4 flex flex-col gap-3">
               <NavLink
                 to="/home"
-                onClick={() => setOpen(false)}
+                onClick={() => setMobileOpen(false)}
                 className="text-slate-700 py-2"
               >
                 {t("Home")}
               </NavLink>
               <NavLink
                 to="/services"
-                onClick={() => setOpen(false)}
+                onClick={() => setMobileOpen(false)}
                 className="text-slate-700 py-2"
               >
                 {t("Services")}
@@ -189,16 +220,27 @@ const Header = () => {
               <div>
                 <div className="font-medium pb-2">{t("Programs")}</div>
                 <div className="flex flex-col">
-                  {courses?.map((item) => (
-                    <Link
-                      key={item.course_id}
-                      to={`/programs/${item.course_id}`}
-                      onClick={() => setOpen(false)}
-                      className="py-1 text-slate-600"
-                    >
-                      {item.name_uz}
-                    </Link>
-                  ))}
+                  {courses?.map((item) => {
+                    const isSelected =
+                      selectedCourse?.course_id === item.course_id;
+                    return (
+                      <Link
+                        key={item.course_id}
+                        to={`/programs/${item.course_id}`}
+                        onClick={() => {
+                          setSelectedCourse(item);
+                          setMobileOpen(false);
+                        }}
+                        className={`py-1 block px-2 rounded ${
+                          isSelected
+                            ? "bg-slate-100 text-[#009688] font-semibold"
+                            : "text-slate-600 hover:bg-slate-50"
+                        }`}
+                      >
+                        {item.name_uz}
+                      </Link>
+                    );
+                  })}
                 </div>
               </div>
               <a href="" className="text-slate-700 py-2">
@@ -206,7 +248,7 @@ const Header = () => {
               </a>
               <NavLink
                 to="/contact"
-                onClick={() => setOpen(false)}
+                onClick={() => setMobileOpen(false)}
                 className="text-slate-700 py-2"
               >
                 {t("Contact")}
