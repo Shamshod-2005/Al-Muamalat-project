@@ -13,7 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type Course = {
   course_id: number;
@@ -26,21 +26,15 @@ const Header = () => {
   const location = useLocation();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
 
   const { data: courses } = useQuery<Course[]>({
     queryKey: ["courses"],
     queryFn: CourseList,
   });
 
-  useEffect(() => {
-    const m = location.pathname.match(/\/programs\/(\d+)/);
-    if (m && courses) {
-      const id = Number(m[1]);
-      const found = courses.find((c) => c.course_id === id);
-      if (found) setSelectedCourse(found);
-    }
-  }, [location.pathname, courses]);
+  const selectedCourse = courses?.find(
+    (item) => location.pathname === `/programs/${item.course_id}`,
+  );
 
   return (
     <div className="sticky top-0 z-50 bg-white shadow-md">
@@ -123,10 +117,7 @@ const Header = () => {
                             ? "bg-slate-100 text-[#009688] font-semibold"
                             : "text-slate-700 hover:bg-slate-50"
                         }`}
-                        onClick={() => {
-                          setSelectedCourse(item);
-                          setDropdownOpen(false);
-                        }}
+                        onClick={() => setDropdownOpen(false)}
                       >
                         {item.name_uz}
                       </Link>
@@ -227,10 +218,7 @@ const Header = () => {
                       <Link
                         key={item.course_id}
                         to={`/programs/${item.course_id}`}
-                        onClick={() => {
-                          setSelectedCourse(item);
-                          setMobileOpen(false);
-                        }}
+                        onClick={() => setMobileOpen(false)}
                         className={`py-1 block px-2 rounded ${
                           isSelected
                             ? "bg-slate-100 text-[#009688] font-semibold"

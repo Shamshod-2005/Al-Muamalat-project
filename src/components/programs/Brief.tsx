@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
+import { useAuthStore } from "@/store/useAuthStore";
 
 type Course = {
   course_id: number;
@@ -71,13 +72,18 @@ const Brief = () => {
     (item) => String(item.course_id) === String(id),
   );
 
-  const {
-    data: user,
-    isLoading: isUserLoading,
-    error: errorUser,
-  } = useQuery({
+  const { isAuth, user: authUser } = useAuthStore();
+
+  type AuthUser = {
+    user_id?: number;
+    id?: number;
+  } | null;
+
+  const { data: user } = useQuery({
     queryKey: ["me"],
     queryFn: getMeApi,
+    enabled: isAuth,
+    retry: false,
   });
 
   const PaymentMutation = useMutation({
@@ -124,14 +130,6 @@ const Brief = () => {
     },
   });
 
-  if (isUserLoading) {
-    return <h1>Loading...</h1>;
-  }
-
-  if (errorUser) {
-    return <h1>Error</h1>;
-  }
-
   if (isLoading) {
     return <h1>Courses loading...</h1>;
   }
@@ -141,14 +139,31 @@ const Brief = () => {
   }
 
   const onSubmit = () => {
-    if (!course || !user) {
-      toast.error("Course or user data is missing");
+    if (!course) {
+      toast.error("Course data is missing");
+      return;
+    }
+
+    if (!isAuth) {
+      toast.error(
+        "Avval ro'yxatdan o'ting, so'ngra sotib olishni davom ettiring",
+      );
+      return;
+    }
+
+    const userId =
+      (authUser as AuthUser)?.user_id ||
+      (authUser as AuthUser)?.id ||
+      (user as AuthUser)?.user_id;
+
+    if (!userId) {
+      toast.error("Unable to determine user. Please login again.");
       return;
     }
 
     const submitData = {
       course_id: course.course_id,
-      user_id: user.user_id,
+      user_id: userId,
     };
 
     console.log("submit data:", submitData);
